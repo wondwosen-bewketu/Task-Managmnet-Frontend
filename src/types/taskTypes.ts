@@ -1,4 +1,3 @@
-// src/types/taskTypes.ts
 export interface SubTask {
   title: string;
   description: string;
@@ -6,11 +5,10 @@ export interface SubTask {
 }
 
 export interface Task {
-  _id?: string;
   title: string;
   description: string;
-  status: string;
-  priority?: string;
+  status: "pending" | "inprogress" | "completed" | "cancelled";
+  priority: "low" | "medium" | "high" | "urgent" | "critical";
   subTasks?: SubTask[];
   attachments?: string[];
   createdAt?: string;
