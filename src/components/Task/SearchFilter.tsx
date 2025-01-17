@@ -1,25 +1,22 @@
-// src/components/SearchFilter.tsx
-import React from 'react';
+import React from "react";
+import { HiOutlineSearch } from "react-icons/hi";
 
-const SearchFilter: React.FC = () => {
+interface SearchBarProps {
+  onSearch: (value: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   return (
-    <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md">
-      {/* Search Bar */}
+    <div className="relative w-full sm:w-1/3 mb-4 sm:mb-0">
+      <HiOutlineSearch className="absolute top-3 left-4 text-gray-400 text-xl" />
       <input
         type="text"
+        onChange={(e) => onSearch(e.target.value)}
         placeholder="Search tasks..."
-        className="w-2/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full py-3 pl-12 pr-4 bg-white/70 backdrop-blur-md shadow-md rounded-full border focus:ring-2 focus:ring-blue-500 transition-all"
       />
-
-      {/* Filters */}
-      <select className="w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="all">All Tasks</option>
-        <option value="completed">Completed</option>
-        <option value="in-progress">In Progress</option>
-        <option value="pending">Pending</option>
-      </select>
     </div>
   );
 };
 
-export default SearchFilter;
+export default SearchBar;

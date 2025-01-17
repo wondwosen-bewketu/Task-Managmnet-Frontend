@@ -9,23 +9,24 @@ import {
 import { Task } from "../../types/taskTypes";
 import { useNavigate } from "react-router-dom";
 import TaskEdit from "./TaskEdit";
+import TaskModal from "../UI/Modal"; // Assuming TaskModal is reusable
 
 interface TaskCardProps {
   task: Task;
+  onEdit: (task: Task) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
 
   const handleEditClick = () => {
+    onEdit(task); // Pass the task to parent component for handling
     setShowEditModal(true);
-    // You could also navigate to the edit page if you want to use a route instead
-    // navigate(`/task/edit/${task.id}`);
   };
 
   const handleViewClick = () => {
-    navigate(`/task}`);
+    navigate(`/task/${task.id}`);
   };
 
   return (
@@ -63,18 +64,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
       </div>
 
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            {/* Render TaskEdit component */}
-            <TaskEdit />
-            <button
-              onClick={() => setShowEditModal(false)}
-              className="absolute top-2 right-2 text-gray-700"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <TaskModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          title="Edit Task"
+        >
+          <TaskEdit task={task} onClose={() => setShowEditModal(false)} />
+        </TaskModal>
       )}
     </div>
   );

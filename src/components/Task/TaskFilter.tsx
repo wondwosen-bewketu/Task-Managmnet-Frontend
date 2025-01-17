@@ -1,26 +1,22 @@
-// src/components/TaskFilter.tsx
 import React from "react";
+import { HiOutlineChevronDown } from "react-icons/hi";
 
 interface TaskFilterProps {
-  onSearch: (term: string) => void;
-  searchTerm: string;
+  onChange: (value: string) => void;
 }
 
-const TaskFilter: React.FC<TaskFilterProps> = ({ onSearch, searchTerm }) => {
+const TaskFilter: React.FC<TaskFilterProps> = ({ onChange }) => {
   return (
-    <div className="flex justify-between items-center mb-6">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => onSearch(e.target.value)}
-        placeholder="Search tasks..."
-        className="p-2 border-2 border-gray-300 rounded-lg w-full md:w-1/2"
-      />
-      <button
-        className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200"
+    <div className="relative w-full sm:w-1/3">
+      <select
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full py-3 px-4 bg-white/70 backdrop-blur-md shadow-md rounded-full border focus:ring-2 focus:ring-blue-500 transition-all"
       >
-        Filter Tasks
-      </button>
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="completed">Completed</option>
+      </select>
+      <HiOutlineChevronDown className="absolute top-4 right-4 text-gray-400" />
     </div>
   );
 };
