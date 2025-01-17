@@ -1,31 +1,40 @@
-// src/components/Footer.tsx
 import React from "react";
+import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black text-gray-500 py-6">
-      <div className="container mx-auto text-center">
-        <p className="text-sm">
-          © {new Date().getFullYear()} Task Manager Pro. All Rights Reserved.
+    <footer className="bg-gray-900 text-gray-300 text-sm py-8">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <p className="text-center md:text-left">
+          &copy; {new Date().getFullYear()} Task Manager. All rights reserved.
         </p>
-        <div className="mt-4 space-x-4">
+        <div className="flex space-x-6 justify-center md:justify-end">
           <a
             href="https://facebook.com"
-            className="hover:text-primary transition"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-2xl hover:text-blue-600 transition-colors duration-300"
+            aria-label="Facebook"
           >
-            Facebook
+            <FaFacebook />
           </a>
           <a
             href="https://twitter.com"
-            className="hover:text-primary transition"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-2xl hover:text-blue-400 transition-colors duration-300"
+            aria-label="Twitter"
           >
-            Twitter
+            <FaTwitter />
           </a>
           <a
             href="https://linkedin.com"
-            className="hover:text-primary transition"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-2xl hover:text-blue-700 transition-colors duration-300"
+            aria-label="LinkedIn"
           >
-            LinkedIn
+            <FaLinkedin />
           </a>
         </div>
       </div>
