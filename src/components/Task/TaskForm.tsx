@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createTask } from "../../api/taskService";
 import { Task } from "../../types/taskTypes";
+
 const TaskForm: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -40,10 +41,6 @@ const TaskForm: React.FC = () => {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-2xl font-bold text-center text-indigo-600 mb-6">
-        Create a New Task
-      </h1>
-
       {error && <div className="text-red-500 text-center mb-4">{error}</div>}
       {success && (
         <div className="text-green-500 text-center mb-4">{success}</div>

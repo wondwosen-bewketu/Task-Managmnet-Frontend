@@ -1,10 +1,13 @@
 export interface SubTask {
+  _id?: string; // Make _id optional
   title: string;
   description: string;
-  status: string;
+  status: "pending" | "inprogress" | "completed" | "cancelled";
+  parentTask?: string;
 }
 
 export interface Task {
+  _id?: string;
   title: string;
   description: string;
   status: "pending" | "inprogress" | "completed" | "cancelled";

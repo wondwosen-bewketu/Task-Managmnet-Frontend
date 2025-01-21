@@ -1,92 +1,125 @@
 import React, { useState } from "react";
-import {
-  HiOutlinePencilAlt,
-  HiOutlineTrash,
-  HiOutlineClipboardList,
-  HiOutlinePaperClip,
-  HiOutlineEye,
-} from "react-icons/hi";
 import { Task } from "../../types/taskTypes";
-import { useNavigate } from "react-router-dom";
-import TaskEdit from "./TaskEdit";
-import TaskModal from "../UI/Modal"; // Assuming TaskModal is reusable
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-interface TaskCardProps {
+interface TaskEditProps {
   task: Task;
-  onEdit: (task: Task) => void;
+  onUpdate: (updatedTask: Task) => void;
+  onClose: () => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
-  const navigate = useNavigate();
-  const [showEditModal, setShowEditModal] = useState(false);
+const TaskEdit: React.FC<TaskEditProps> = ({ task, onUpdate, onClose }) => {
+  const [editedTask, setEditedTask] = useState<Task>({ ...task });
 
-  const handleEditClick = () => {
-    onEdit(task); // Pass the task to parent component for handling
-    setShowEditModal(true);
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setEditedTask((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleViewClick = () => {
-    navigate(`/task/${task.id}`);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onUpdate(editedTask);
+    toast.success("Task updated successfully!"); // Success toast notification
+    onClose(); // Automatically close modal after update
   };
 
   return (
-    <div className="bg-white p-6 border border-gray-300 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-      <div className="flex justify-between items-start mb-4">
+    <>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <h3 className="font-bold text-2xl text-gray-800 mb-2">
-            {task.title}
-          </h3>
-          <p className="text-gray-600 text-sm">{task.description}</p>
-        </div>
-        <div className="flex space-x-4 text-gray-600 text-2xl">
-          <HiOutlinePencilAlt
-            className="cursor-pointer hover:text-black transition-all duration-300 transform hover:scale-110"
-            onClick={handleEditClick}
-          />
-          <HiOutlineTrash className="cursor-pointer hover:text-red-600 transition-all duration-300 transform hover:scale-110" />
-          <HiOutlineClipboardList className="cursor-pointer hover:text-blue-600 transition-all duration-300 transform hover:scale-110" />
-          <HiOutlinePaperClip className="cursor-pointer hover:text-teal-600 transition-all duration-300 transform hover:scale-110" />
-          <HiOutlineEye
-            className="cursor-pointer hover:text-gray-800 transition-all duration-300 transform hover:scale-110"
-            onClick={handleViewClick}
+          <label className="block font-semibold text-gray-800" htmlFor="title">
+            Title
+          </label>
+          <input
+            id="title"
+            type="text"
+            name="title"
+            value={editedTask.title}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg border border-gray-300"
+            required
           />
         </div>
-      </div>
-      <div className="flex justify-between items-center mt-4">
-        <span
-          className={`px-4 py-2 text-sm font-medium rounded-full ${getStatusStyle(
-            task.status
-          )}`}
-        >
-          {task.status}
-        </span>
-        <span className="text-sm text-gray-600">{task.priority}</span>
-      </div>
 
-      {showEditModal && (
-        <TaskModal
-          isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          title="Edit Task"
-        >
-          <TaskEdit task={task} onClose={() => setShowEditModal(false)} />
-        </TaskModal>
-      )}
-    </div>
+        <div>
+          <label
+            className="block font-semibold text-gray-800"
+            htmlFor="description"
+          >
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={editedTask.description}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg border border-gray-300"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block font-semibold text-gray-800" htmlFor="status">
+            Status
+          </label>
+          <select
+            id="status"
+            name="status"
+            value={editedTask.status}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg border border-gray-300"
+            required
+          >
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div>
+          <label
+            className="block font-semibold text-gray-800"
+            htmlFor="priority"
+          >
+            Priority
+          </label>
+          <select
+            id="priority"
+            name="priority"
+            value={editedTask.priority}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg border border-gray-300"
+            required
+          >
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="py-2 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="py-2 px-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          >
+            Update Task
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
-const getStatusStyle = (status: string) => {
-  switch (status) {
-    case "completed":
-      return "bg-green-200 text-green-800";
-    case "pending":
-      return "bg-yellow-200 text-yellow-800";
-    case "in-progress":
-      return "bg-blue-200 text-blue-800";
-    default:
-      return "bg-gray-200 text-gray-800";
-  }
-};
-
-export default TaskCard;
+export default TaskEdit;
