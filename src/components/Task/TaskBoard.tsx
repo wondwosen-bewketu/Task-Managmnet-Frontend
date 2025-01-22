@@ -3,7 +3,7 @@ import TaskList from "./TaskList";
 import TaskFilter from "./TaskFilter";
 import SearchBar from "./SearchFilter";
 import { Task } from "../../types/taskTypes";
-import { getAllTasks } from "../../api/taskService";
+import { getTasks } from "../../api/taskService";
 import TaskModal from "../UI/Modal";
 import TaskForm from "./TaskForm";
 
@@ -21,8 +21,13 @@ const TaskBoard: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await getAllTasks();
-        setTasks(data);
+        const response = await getTasks();
+        // Ensure you access the 'tasks' array in the response
+        if (response && response.tasks) {
+          setTasks(response.tasks);
+        } else {
+          setTasks([]);
+        }
       } catch {
         setError("Oops! Something went wrong while loading tasks.");
       } finally {
@@ -34,15 +39,17 @@ const TaskBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = tasks.filter((task) => {
-      const matchesSearch = task.title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const matchesStatus =
-        statusFilter === "all" || task.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-    setFilteredTasks(filtered);
+    if (Array.isArray(tasks)) {
+      const filtered = tasks.filter((task) => {
+        const matchesSearch = task.title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+        const matchesStatus =
+          statusFilter === "all" || task.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+      setFilteredTasks(filtered);
+    }
   }, [tasks, searchQuery, statusFilter]);
 
   const handleAddTask = (data: Task) => {

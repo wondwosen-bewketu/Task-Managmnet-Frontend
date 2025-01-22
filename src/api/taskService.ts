@@ -1,13 +1,21 @@
 import apiClient from "../services/apiClient"; // Import the configured Axios client
 import { Task, SubTask } from "../types/taskTypes"; // Import Task type to ensure type safety
 
-// Fetch all tasks
-export const getAllTasks = async (): Promise<Task[]> => {
+// Fetch paginated tasks
+export const getTasks = async (
+  page: number,
+  limit: number
+): Promise<{ tasks: Task[]; total: number }> => {
   try {
-    const response = await apiClient.get("/tasks");
-    return response.data; // Return the task data from the response
+    const response = await apiClient.get("/tasks", {
+      params: { page, limit },
+    });
+    return {
+      tasks: response.data.tasks,
+      total: response.data.total,
+    };
   } catch (error) {
-    console.error("Error fetching tasks:", error);
+    console.error("Error fetching paginated tasks:", error);
     throw new Error("Could not fetch tasks");
   }
 };
@@ -46,15 +54,22 @@ export const deleteTask = async (id: string): Promise<void> => {
   }
 };
 
-export const addSubtask = async (subtask: SubTask) => {
+export const addSubtask = async (subtask: {
+  title: string;
+  description: string;
+  status: string;
+  parentTask: string;
+}) => {
   try {
+    console.log("Subtask data being sent:", JSON.stringify(subtask));
     const response = await apiClient.post("/subtasks", subtask);
-    return response.data; // This should return the created subtask
+    return response.data; // Return the server's response
   } catch (error) {
     console.error("Error creating subtask:", error);
     throw new Error("Error creating subtask");
   }
 };
+
 // Update a subtask
 export const updateSubtask = async (
   id: string,
@@ -76,5 +91,18 @@ export const deleteSubtask = async (id: string): Promise<void> => {
   } catch (error) {
     console.error("Error deleting subtask:", error);
     throw new Error("Could not delete subtask");
+  }
+};
+
+export const updateTaskStatus = async (
+  taskId: string,
+  status: string
+): Promise<Task> => {
+  try {
+    const response = await apiClient.put(`/tasks/${taskId}/status`, { status });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    throw new Error("Could not update task status");
   }
 };

@@ -17,6 +17,7 @@ const SubTaskEdit = ({
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
+  // If a subtask is passed in, update the input fields accordingly
   useEffect(() => {
     if (subtask) {
       setTitle(subtask.title);
@@ -26,14 +27,19 @@ const SubTaskEdit = ({
 
   const handleSubmit = () => {
     if (title.trim() && description.trim()) {
-      onSubmit({
-        ...subtask!,
-        title,
-        description,
-      });
+      // Only submit if the subtask exists and title/description are non-empty
+      if (subtask) {
+        onSubmit({
+          ...subtask,
+          title,
+          description,
+        });
+        onClose(); // Close the modal after submitting
+      }
     }
   };
 
+  // Don't render modal if not open or subtask is null
   if (!isOpen || !subtask) return null;
 
   return (

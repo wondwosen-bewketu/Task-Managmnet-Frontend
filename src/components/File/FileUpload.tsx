@@ -1,38 +1,37 @@
+// FileUpload.tsx
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FaFileUpload } from "react-icons/fa"; // File upload icon
-import { MdError, MdCheckCircle } from "react-icons/md"; // Error and success indication icons
-import axios from "axios"; // Import Axios for API calls
+import axios from "axios";
 
 interface FileUploadProps {
-  onDrop: (files: File[]) => void;
-  taskId: string; // Pass the taskId as a prop
+  taskId: string;
+  onClose: () => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onDrop, taskId }) => {
-  const [uploadStatus, setUploadStatus] = useState<string | null>(null); // Track upload status (URL or error)
-  const [isUploading, setIsUploading] = useState(false); // Track upload progress
+const FileUpload: React.FC<FileUploadProps> = ({ taskId, onClose }) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
-  const { getRootProps, getInputProps, isDragActive, isDragReject } =
-    useDropzone({
-      onDrop,
-      accept: ".png,.jpg,.pdf",
-      maxSize: 10485760, // 10 MB
-    });
+  const onDrop = (acceptedFiles: File[]) => {
+    setFile(acceptedFiles[0]);
+  };
 
-  const handleFileUpload = async (file: File) => {
-    setIsUploading(true); // Start upload
-    setUploadStatus(null); // Reset status before upload
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: ".jpg,.jpeg,.png,.pdf,.docx,.xlsx,.txt", // allowed file types
+  });
 
-    // Prepare FormData for the file
+  const handleFileUpload = async () => {
+    if (!file) return;
+
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("taskId", taskId);
+    setUploading(true);
 
     try {
-      // Make POST request to backend for file upload
       const response = await axios.post(
-        "http://localhost:3000/files/upload",
+        `http://localhost:3000/files/upload?taskId=${taskId}`,
         formData,
         {
           headers: {
@@ -40,65 +39,59 @@ const FileUpload: React.FC<FileUploadProps> = ({ onDrop, taskId }) => {
           },
         }
       );
-
-      // Handle successful upload
-      setIsUploading(false);
-      setUploadStatus(`File uploaded successfully! URL: ${response.data.url}`);
+      setUploadSuccess(true);
+      console.log("File uploaded successfully:", response.data);
     } catch (error) {
-      // Handle error
-      setIsUploading(false);
-      setUploadStatus("Error uploading file. Please try again.");
-    }
-  };
-
-  const handleDrop = (acceptedFiles: File[]) => {
-    // Handle file drop
-    if (acceptedFiles.length > 0) {
-      handleFileUpload(acceptedFiles[0]); // Upload the first file dropped
+      console.error("Error uploading file:", error);
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
-    <div
-      {...getRootProps()}
-      className={`flex flex-col items-center justify-center p-12 w-full max-w-xl border-2 rounded-xl cursor-pointer transition-all duration-300 ease-in-out
-      ${
-        isDragActive
-          ? "bg-gradient-to-r from-green-600 to-teal-600"
-          : "bg-gradient-to-r from-gray-800 to-gray-900"
-      }
-      ${
-        isDragReject ? "border-red-500" : "border-gray-600"
-      } hover:scale-105 hover:shadow-2xl transform`}
-    >
-      <input {...getInputProps()} />
-      <div className="flex flex-col items-center text-gray-200">
-        <FaFileUpload className="text-6xl mb-6 text-gray-300" />
-        <p className="text-xl font-semibold tracking-wider text-center text-gray-100">
-          {isDragActive ? "Release to upload" : "Drag & Drop Files Here"}
-        </p>
-        <p className="text-sm opacity-80 mt-2 text-gray-400">
-          or click to select files. Max size: 10MB
-        </p>
+    <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="modal-content bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+        <h3 className="text-2xl font-bold mb-6">Upload File</h3>
 
-        {/* Upload Status */}
-        {uploadStatus && (
+        {/* Drag and Drop Area */}
+        <div
+          {...getRootProps()}
+          className="border-4 border-dashed border-gray-300 p-8 text-center cursor-pointer"
+        >
+          <input {...getInputProps()} />
+          <p className="text-gray-600">
+            Drag & drop your file here, or click to select a file
+          </p>
+        </div>
+
+        {file && (
           <div className="mt-4">
-            {uploadStatus.includes("Error") ? (
-              <div className="text-red-500">
-                <MdError className="text-4xl" />
-                <p className="text-sm text-center text-red-500 mt-2">
-                  {uploadStatus}
-                </p>
-              </div>
-            ) : (
-              <div className="text-green-500">
-                <MdCheckCircle className="text-4xl" />
-                <p className="text-sm text-center text-green-500 mt-2">
-                  {uploadStatus}
-                </p>
-              </div>
-            )}
+            <p className="text-sm text-gray-700">Selected file: {file.name}</p>
+          </div>
+        )}
+
+        {/* Upload Button */}
+        <div className="flex gap-4 mt-6 justify-center">
+          <button
+            onClick={handleFileUpload}
+            disabled={!file || uploading}
+            className={`px-6 py-3 text-white rounded-lg bg-blue-600 hover:bg-blue-700 transition-all ${
+              uploading ? "opacity-50" : ""
+            }`}
+          >
+            {uploading ? "Uploading..." : "Upload"}
+          </button>
+          <button
+            onClick={onClose}
+            className="px-6 py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all"
+          >
+            Cancel
+          </button>
+        </div>
+
+        {uploadSuccess && (
+          <div className="mt-4 text-green-600">
+            <p>File uploaded successfully!</p>
           </div>
         )}
       </div>

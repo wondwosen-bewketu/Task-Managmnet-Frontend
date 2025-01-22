@@ -16,6 +16,7 @@ const SubtaskForm = ({ taskId, onSubmit, onClose }: SubtaskFormProps) => {
   const [status, setStatus] = useState<
     "pending" | "inprogress" | "completed" | "cancelled"
   >("pending");
+
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,6 +37,11 @@ const SubtaskForm = ({ taskId, onSubmit, onClose }: SubtaskFormProps) => {
 
       if (response && response._id) {
         onSubmit(response._id); // After creating, call onSubmit with the new subtask ID
+
+        // Fetch and update the subtasks (this can be implemented as part of the onSubmit)
+        // For example, you could call a method to reload subtasks here:
+        // fetchSubTasks(taskId);
+
         onClose(); // Close the modal after submitting
         toast.success("Subtask successfully created!"); // Display success toast
       } else {
@@ -76,6 +82,7 @@ const SubtaskForm = ({ taskId, onSubmit, onClose }: SubtaskFormProps) => {
         >
           Status
         </label>
+
         <select
           id="status"
           value={status}
