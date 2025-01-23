@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface FilePreviewModalProps {
   isOpen: boolean;
@@ -18,17 +18,12 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
   const fileExtension = fileType.split(".").pop()?.toLowerCase();
 
   const renderPreviewContent = () => {
-    if (
-      fileExtension === "jpg" ||
-      fileExtension === "jpeg" ||
-      fileExtension === "png" ||
-      fileExtension === "gif"
-    ) {
+    if (["jpg", "jpeg", "png", "gif"].includes(fileExtension || "")) {
       return (
         <img
           src={fileUrl}
           alt="File Preview"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain rounded-lg shadow-md"
         />
       );
     } else if (fileExtension === "pdf") {
@@ -38,13 +33,13 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
           width="100%"
           height="500px"
           title="PDF Preview"
-          className="border-none"
+          className="border rounded-lg shadow-md"
         />
       );
     } else {
       return (
         <a href={fileUrl} download>
-          <button className="bg-blue-500 text-white p-3 rounded-lg mt-4">
+          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg mt-4 hover:bg-blue-700 transition-all duration-300 shadow-md">
             Download {fileExtension?.toUpperCase()} File
           </button>
         </a>
@@ -54,22 +49,29 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 transition-all duration-300"
+      className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-60 z-50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="relative bg-white p-8 rounded-lg shadow-2xl w-full max-w-3xl"
+        className="relative bg-white p-6 md:p-10 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all duration-500 scale-100"
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
       >
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+          className="absolute top-3 right-3 bg-gray-800 text-white w-8 h-8 flex justify-center items-center rounded-full hover:bg-red-500 transition-colors duration-300"
         >
-          ✖️
+          ✖
         </button>
+
+        {/* Modal Content */}
         <div className="text-center">
-          <h3 className="text-2xl font-semibold mb-6">File Preview</h3>
-          {renderPreviewContent()}
+          <h3 className="text-3xl font-semibold mb-6 text-gray-700">
+            File Preview
+          </h3>
+          <div className="flex justify-center items-center border-dashed border-2 border-gray-300 p-4 rounded-lg bg-gray-100">
+            {renderPreviewContent()}
+          </div>
         </div>
       </div>
     </div>

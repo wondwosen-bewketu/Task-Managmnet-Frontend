@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createTask } from "../../api/taskService";
 import { Task } from "../../types/taskTypes";
+import { toast } from "react-toastify";
 
 const TaskForm: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -12,7 +13,6 @@ const TaskForm: React.FC = () => {
     "low" | "medium" | "high" | "urgent" | "critical"
   >("high");
   const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ const TaskForm: React.FC = () => {
 
     try {
       await createTask(newTask);
-      setSuccess("Task created successfully!");
+      toast("Task created successfully!");
       setTitle("");
       setDescription("");
       setStatus("pending");
@@ -42,9 +42,6 @@ const TaskForm: React.FC = () => {
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
       {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-      {success && (
-        <div className="text-green-500 text-center mb-4">{success}</div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col">

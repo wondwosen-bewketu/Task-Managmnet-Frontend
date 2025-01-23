@@ -13,43 +13,46 @@ const SubtaskList: React.FC<SubtaskListProps> = ({
   onDeleteSubtask,
 }) => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-2xl p-16">
-      <h2 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-500 to-pink-500 mb-12 text-center tracking-tight">
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-12 rounded-xl shadow-xl">
+      <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-500 to-pink-500 mb-8 text-center">
         Subtasks
       </h2>
 
       {subtasks.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 md:gap-12 lg:gap-16 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {subtasks.map((subtask) => (
             <div
               key={subtask._id}
-              className="bg-gradient-to-br from-purple-700 via-pink-600 to-yellow-500 p-8 rounded-3xl shadow-xl transform transition-all duration-500 hover:scale-105 hover:shadow-2xl backdrop-blur-lg border border-opacity-10 border-white hover:translate-y-2"
+              className="relative max-w-xs mx-auto bg-gradient-to-br from-purple-800 via-pink-700 to-yellow-600 p-4 md:p-6 rounded-3xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
             >
-              <h3 className="text-2xl font-semibold text-white mb-4 tracking-wide">
-                {subtask.title}
-              </h3>
-              <p className="text-gray-200 mb-6 leading-relaxed text-sm sm:text-base">
-                {subtask.description}
-              </p>
-              <div className="flex gap-6 justify-center">
-                <button
-                  onClick={() => onEditSubtask(subtask)}
-                  className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl shadow-lg hover:scale-110 hover:shadow-2xl transition-all duration-300 font-semibold backdrop-blur-sm"
-                >
-                  ✏️ Edit
-                </button>
-                <button
-                  onClick={() => onDeleteSubtask(subtask._id)}
-                  className="px-8 py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl shadow-lg hover:scale-110 hover:shadow-2xl transition-all duration-300 font-semibold backdrop-blur-sm"
-                >
-                  🗑️ Delete
-                </button>
+              <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-10 rounded-3xl z-0"></div>
+              <div className="relative z-10">
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-4 tracking-wide">
+                  {subtask.title}
+                </h3>
+                <p className="text-gray-200 mb-4 md:mb-6 leading-relaxed text-sm md:text-base">
+                  {subtask.description}
+                </p>
+                <div className="flex gap-4 justify-center">
+                  <button
+                    onClick={() => onEditSubtask(subtask)}
+                    className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg shadow-md hover:scale-110 hover:shadow-xl transition-all duration-300 font-semibold"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    onClick={() => onDeleteSubtask(subtask._id)}
+                    className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg shadow-md hover:scale-110 hover:shadow-xl transition-all duration-300 font-semibold"
+                  >
+                    🗑️ Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-gray-400 italic text-center text-xl font-light mt-12">
+        <p className="text-gray-400 italic text-center text-lg mt-8">
           No subtasks available.
         </p>
       )}
