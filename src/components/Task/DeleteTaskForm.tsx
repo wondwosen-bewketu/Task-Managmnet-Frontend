@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import Button from "../UI/Button";
 
 interface DeleteTaskFormProps {
   taskId: string;
@@ -8,26 +9,24 @@ interface DeleteTaskFormProps {
 
 const DeleteTaskForm = ({ taskId, onClose, onDelete }: DeleteTaskFormProps) => {
   const handleDelete = () => {
-    onDelete(taskId); // Perform deletion logic
-    toast.success("Task deleted successfully!"); // Show success toast
-    onClose(); // Close the modal/form after deletion
+    onDelete(taskId);
+    toast.success("Task deleted successfully!");
+    onClose();
   };
 
   return (
     <div className="text-center">
       <div className="space-x-4">
-        <button
-          className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600"
+        <Button
           onClick={handleDelete}
-        >
-          Yes, Delete
-        </button>
-        <button
-          className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600"
+          text="Yes, Delete"
+          className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600"
+        />
+        <Button
           onClick={onClose}
-        >
-          Cancel
-        </button>
+          text="Cancel"
+          className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600"
+        />
       </div>
     </div>
   );

@@ -1,13 +1,18 @@
-import React from "react";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-import { Task } from "../../types/taskTypes";
+import { Task } from "../../types";
+import {
+  getStatusStyle,
+  getPriorityStyle,
+  formatStatus,
+  formatPriority,
+} from "../../utils";
 
 interface TaskCardProps {
   task: Task;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+const TaskCard = ({ task }: TaskCardProps) => {
   const navigate = useNavigate();
 
   const handleIconClick = () => {
@@ -30,31 +35,21 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
           />
         </div>
       </div>
+
       <div className="flex justify-between items-center mt-4">
         <span
           className={`px-4 py-2 text-sm font-medium rounded-full ${getStatusStyle(
             task.status
           )}`}
         >
-          {task.status}
+          {formatStatus(task.status)}
         </span>
-        <span className="text-sm text-gray-600">{task.priority}</span>
+        <span className={`text-sm ${getPriorityStyle(task.priority)}`}>
+          {formatPriority(task.priority)}
+        </span>
       </div>
     </div>
   );
-};
-
-const getStatusStyle = (status: string) => {
-  switch (status) {
-    case "completed":
-      return "bg-green-200 text-green-800";
-    case "pending":
-      return "bg-yellow-200 text-yellow-800";
-    case "in-progress":
-      return "bg-blue-200 text-blue-800";
-    default:
-      return "bg-gray-200 text-gray-800";
-  }
 };
 
 export default TaskCard;

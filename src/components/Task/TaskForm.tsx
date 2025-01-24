@@ -1,23 +1,27 @@
-import React, { useState } from "react";
-import { createTask } from "../../api/taskService";
-import { Task } from "../../types/taskTypes";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import Button from "../UI/Button";
+import { Status, Task, TaskPriority } from "../../types";
+import InputField from "../UI/InputField";
+import useTask from "../../hooks/useTask";
 
-const TaskForm: React.FC = () => {
+interface TaskFormProps {
+  closeModal: () => void;
+  onSubmit: (newTask: Task) => void; // Add onSubmit here
+}
+
+const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
+  const { handleAddTask } = useTask();
+
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [status, setStatus] = useState<
-    "pending" | "inprogress" | "completed" | "cancelled"
-  >("pending");
-  const [priority, setPriority] = useState<
-    "low" | "medium" | "high" | "urgent" | "critical"
-  >("high");
-  const [error, setError] = useState<string>("");
+  const [status, setStatus] = useState<Status>(Status.Pending);
+  const [priority, setPriority] = useState<TaskPriority>(TaskPriority.High);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newTask: Task = {
+    const newTask = {
       title,
       description,
       status,
@@ -27,127 +31,68 @@ const TaskForm: React.FC = () => {
     };
 
     try {
-      await createTask(newTask);
-      toast("Task created successfully!");
-      setTitle("");
-      setDescription("");
-      setStatus("pending");
-      setPriority("high");
+      await handleAddTask(newTask);
+      toast.success("Task created successfully!");
+      closeModal();
     } catch (err) {
-      console.error(err);
-      setError("Failed to create task.");
+      console.error("Error creating task:", err);
+      toast.error("Failed to create task.");
     }
   };
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col">
-          <label
-            htmlFor="title"
-            className="text-sm font-medium text-gray-700 mb-2"
-          >
-            Title
-          </label>
-          <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Enter task title"
-          />
-        </div>
+        <InputField
+          id="title"
+          label="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter task title"
+          required
+        />
+        {/* Description Field */}
+        <InputField
+          id="description"
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Enter task description"
+          type="textarea"
+          rows={4}
+          required
+        />
 
-        <div className="flex flex-col">
-          <label
-            htmlFor="description"
-            className="text-sm font-medium text-gray-700 mb-2"
-          >
-            Description
-          </label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Enter task description"
-            rows={4}
-          />
-        </div>
-
+        {/* Status & Priority Fields */}
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex flex-col w-full">
-            <label
-              htmlFor="status"
-              className="text-sm font-medium text-gray-700 mb-2"
-            >
-              Status
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) =>
-                setStatus(
-                  e.target.value as
-                    | "pending"
-                    | "inprogress"
-                    | "completed"
-                    | "cancelled"
-                )
-              }
-              required
-              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="pending">Pending</option>
-              <option value="inprogress">In Progress</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
+          {/* Status */}
+          <InputField
+            id="status"
+            label="Status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as Status)}
+            type="select"
+            options={Object.values(Status)}
+            required
+          />
 
-          <div className="flex flex-col w-full">
-            <label
-              htmlFor="priority"
-              className="text-sm font-medium text-gray-700 mb-2"
-            >
-              Priority
-            </label>
-            <select
-              id="priority"
-              value={priority}
-              onChange={(e) =>
-                setPriority(
-                  e.target.value as
-                    | "low"
-                    | "medium"
-                    | "high"
-                    | "urgent"
-                    | "critical"
-                )
-              }
-              required
-              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-              <option value="urgent">Urgent</option>
-              <option value="critical">Critical</option>
-            </select>
-          </div>
+          {/* Priority */}
+          <InputField
+            id="priority"
+            label="Priority"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as TaskPriority)}
+            type="select"
+            options={Object.values(TaskPriority)}
+            required
+          />
         </div>
-
-        <button
+        <Button
           type="submit"
-          className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out"
-        >
-          Create Task
-        </button>
+          onClick={handleSubmit}
+          text="Create Task"
+          className="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+        />
       </form>
     </div>
   );

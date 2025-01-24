@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Task } from "../../types/taskTypes";
+import Button from "../UI/Button";
 import FileUpload from "../File/FileUpload";
 
 interface TaskHeaderProps {
@@ -11,14 +12,14 @@ interface TaskHeaderProps {
   onAddSubtask: () => void;
 }
 
-const TaskHeader: React.FC<TaskHeaderProps> = ({
+const TaskHeader = ({
   task,
   onUpdateTaskStatus,
   onGoBack,
   onEditTask,
   onDeleteTask,
   onAddSubtask,
-}) => {
+}: TaskHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openFileUploadModal = () => {
@@ -31,19 +32,14 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 
   return (
     <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-black shadow-2xl p-4 sm:p-6 md:p-8 w-full min-h-[200px] md:min-h-[300px] relative">
-      {/* Decorative Blur Gradient */}
       <div className="absolute inset-0 pointer-events-none opacity-25 bg-gradient-to-br from-purple-600 via-teal-500 to-cyan-500 blur-3xl"></div>
 
       <div className="flex flex-col md:flex-row justify-between items-center w-full relative gap-6 md:gap-4">
-        {/* Left side: Back Button */}
-        <button
+        <Button
           onClick={onGoBack}
-          className="mb-4 md:mb-6 flex items-center gap-2 text-teal-400 hover:text-teal-200 transition-all text-base md:text-lg font-semibold"
-        >
-          <span className="text-xl md:text-2xl">←</span> Back
-        </button>
-
-        {/* Center: Title and Description */}
+          text="← Back"
+          className="mb-4 md:mb-6 text-teal-400 hover:text-teal-200 transition-all text-base md:text-lg font-semibold"
+        />
         <div className="flex flex-col items-center justify-center text-center space-y-2 md:space-y-4 flex-grow">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-500 to-blue-500 mb-2 md:mb-4">
             {task.title}
@@ -52,7 +48,6 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
             {task.description}
           </p>
 
-          {/* Status Selector */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mb-4 md:mb-8">
             <span className="font-medium text-gray-300 text-base md:text-lg">
               Status:
@@ -70,40 +65,33 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
           </div>
         </div>
 
-        {/* Right side: Action Buttons */}
         <div className="flex flex-row md:flex-col gap-2 sm:gap-4 md:gap-6 z-10 w-full md:w-auto justify-center">
-          {/* Edit Task Button */}
-          <button
+          <Button
             onClick={onEditTask}
+            text="✏️ Edit"
             className="flex-1 md:flex-none px-3 sm:px-4 md:px-6 py-2 md:py-4 text-sm md:text-base text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-xl transform hover:scale-110 hover:shadow-2xl transition-all"
-          >
-            <span className="hidden sm:inline">✏️</span> Edit
-          </button>
-          {/* Delete Task Button */}
-          <button
-            onClick={onDeleteTask}
-            className="flex-1 md:flex-none px-3 sm:px-4 md:px-6 py-2 md:py-4 text-sm md:text-base text-white bg-gradient-to-r from-red-500 to-red-700 rounded-lg shadow-xl transform hover:scale-110 hover:shadow-2xl transition-all"
-          >
-            <span className="hidden sm:inline">🗑️</span> Delete
-          </button>
-          {/* Add Subtask Button */}
-          <button
-            onClick={onAddSubtask}
-            className="flex-1 md:flex-none px-3 sm:px-4 md:px-6 py-2 md:py-4 text-sm md:text-base text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-xl transform hover:scale-110 hover:shadow-2xl transition-all"
-          >
-            <span className="hidden sm:inline">➕</span> Add
-          </button>
+          />
 
-          <button
+          <Button
+            onClick={onDeleteTask}
+            text="🗑️ Delete"
+            className="flex-1 md:flex-none px-3 sm:px-4 md:px-6 py-2 md:py-4 text-sm md:text-base text-white bg-gradient-to-r from-red-500 to-red-700 rounded-lg shadow-xl transform hover:scale-110 hover:shadow-2xl transition-all"
+          />
+
+          <Button
+            onClick={onAddSubtask}
+            text="➕ Add"
+            className="flex-1 md:flex-none px-3 sm:px-4 md:px-6 py-2 md:py-4 text-sm md:text-base text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-xl transform hover:scale-110 hover:shadow-2xl transition-all"
+          />
+
+          <Button
             onClick={openFileUploadModal}
+            text="📂 Add File"
             className="mt-6 px-6 py-4 text-white bg-gradient-to-r from-teal-600 to-cyan-600 rounded-lg shadow-xl transform hover:scale-110 hover:shadow-2xl transition-all"
-          >
-            📂 Add File
-          </button>
+          />
         </div>
       </div>
-
-      {isModalOpen && (
+      {isModalOpen && task._id && (
         <FileUpload taskId={task._id} onClose={closeFileUploadModal} />
       )}
     </div>

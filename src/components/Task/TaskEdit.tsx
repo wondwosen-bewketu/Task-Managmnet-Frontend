@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Task } from "../../types/taskTypes";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Task } from "../../types/taskTypes";
+import Button from "../UI/Button";
+import { Status, TaskPriority } from "../../types";
+import InputField from "../UI/InputField"; // Import reusable InputField
 
 interface TaskEditProps {
   task: Task;
@@ -9,7 +11,7 @@ interface TaskEditProps {
   onClose: () => void;
 }
 
-const TaskEdit: React.FC<TaskEditProps> = ({ task, onUpdate, onClose }) => {
+const TaskEdit = ({ task, onUpdate, onClose }: TaskEditProps) => {
   const [editedTask, setEditedTask] = useState<Task>({ ...task });
 
   const handleChange = (
@@ -24,45 +26,37 @@ const TaskEdit: React.FC<TaskEditProps> = ({ task, onUpdate, onClose }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onUpdate(editedTask);
-    toast.success("Task updated successfully!"); // Success toast notification
-    onClose(); // Automatically close modal after update
+    toast.success("Task updated successfully!");
+    onClose();
   };
 
   return (
-    <>
+    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-semibold text-gray-800" htmlFor="title">
-            Title
-          </label>
-          <input
-            id="title"
-            type="text"
-            name="title"
-            value={editedTask.title}
-            onChange={handleChange}
-            className="w-full p-3 rounded-lg border border-gray-300"
-            required
-          />
-        </div>
+        {/* Title Field */}
+        <InputField
+          id="title"
+          label="Title"
+          name="title" // Add name
+          value={editedTask.title}
+          onChange={handleChange}
+          placeholder="Enter task title"
+          required
+        />
 
-        <div>
-          <label
-            className="block font-semibold text-gray-800"
-            htmlFor="description"
-          >
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={editedTask.description}
-            onChange={handleChange}
-            className="w-full p-3 rounded-lg border border-gray-300"
-            required
-          />
-        </div>
+        <InputField
+          id="description"
+          label="Description"
+          name="description" // Add name
+          value={editedTask.description}
+          onChange={handleChange}
+          placeholder="Enter task description"
+          type="textarea"
+          rows={4}
+          required
+        />
 
+        {/* Status Field */}
         <div>
           <label className="block font-semibold text-gray-800" htmlFor="status">
             Status
@@ -75,12 +69,15 @@ const TaskEdit: React.FC<TaskEditProps> = ({ task, onUpdate, onClose }) => {
             className="w-full p-3 rounded-lg border border-gray-300"
             required
           >
-            <option value="Pending">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
+            {Object.values(Status).map((statusOption) => (
+              <option key={statusOption} value={statusOption}>
+                {statusOption.charAt(0).toUpperCase() + statusOption.slice(1)}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* Priority Field */}
         <div>
           <label
             className="block font-semibold text-gray-800"
@@ -96,29 +93,32 @@ const TaskEdit: React.FC<TaskEditProps> = ({ task, onUpdate, onClose }) => {
             className="w-full p-3 rounded-lg border border-gray-300"
             required
           >
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
+            {Object.values(TaskPriority).map((priorityOption) => (
+              <option key={priorityOption} value={priorityOption}>
+                {priorityOption.charAt(0).toUpperCase() +
+                  priorityOption.slice(1)}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* Buttons */}
         <div className="flex justify-end space-x-4">
-          <button
-            type="button"
+          <Button
             onClick={onClose}
+            text="Cancel"
             className="py-2 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-          >
-            Cancel
-          </button>
-          <button
+          />
+
+          <Button
+            onClick={handleSubmit}
+            text="Update Task"
             type="submit"
             className="py-2 px-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-          >
-            Update Task
-          </button>
+          />
         </div>
       </form>
-    </>
+    </div>
   );
 };
 

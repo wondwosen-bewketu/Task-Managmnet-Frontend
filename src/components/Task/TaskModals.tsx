@@ -1,4 +1,3 @@
-import React from "react";
 import TaskModal from "../UI/Modal";
 import TaskEdit from "./TaskEdit";
 import SubtaskEdit from "../Sub Task/SubtaskEdit";
@@ -14,7 +13,6 @@ interface TaskModalsProps {
     isDeleteModalOpen: boolean;
   };
   task: Task | null;
-  subtask: SubTask | null;
   currentSubtask: SubTask | null;
   closeModal: (modalType: string) => void;
   handleUpdateTask: (updatedTask: Task) => void;
@@ -24,21 +22,19 @@ interface TaskModalsProps {
   handleDeleteTask: (taskId: string) => void;
 }
 
-const TaskModals: React.FC<TaskModalsProps> = ({
+const TaskModals = ({
   modalState,
   task,
-  subtask,
   currentSubtask,
   closeModal,
   handleUpdateTask,
   handleAddSubtask,
   handleDeleteTask,
   handleUpdateSubtask,
-}) => {
+}: TaskModalsProps) => {
   return (
     <>
-      {/* Edit Task Modal */}
-      {modalState.isEditModalOpen && task && (
+      {modalState.isEditModalOpen && task && task._id && (
         <TaskModal
           isOpen={modalState.isEditModalOpen}
           onClose={() => closeModal("isEditModalOpen")}
@@ -52,7 +48,6 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         </TaskModal>
       )}
 
-      {/* Edit Sub Task Modal */}
       {modalState.isEditSubTaskModalOpen && currentSubtask && (
         <TaskModal
           isOpen={modalState.isEditSubTaskModalOpen}
@@ -61,14 +56,14 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         >
           <SubtaskEdit
             subtask={currentSubtask}
-            onUpdate={handleUpdateSubtask}
+            onSubmit={handleUpdateSubtask}
             onClose={() => closeModal("isEditSubTaskModalOpen")}
+            isOpen={modalState.isEditSubTaskModalOpen}
           />
         </TaskModal>
       )}
 
-      {/* Create Subtask Modal */}
-      {modalState.isSubtaskModalOpen && !currentSubtask && task && (
+      {modalState.isSubtaskModalOpen && !currentSubtask && task && task._id && (
         <TaskModal
           isOpen={modalState.isSubtaskModalOpen}
           onClose={() => closeModal("isSubtaskModalOpen")}
@@ -82,8 +77,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         </TaskModal>
       )}
 
-      {/* Edit Subtask Modal (using currentSubtask for editing) */}
-      {modalState.isSubtaskModalOpen && currentSubtask && task && (
+      {modalState.isSubtaskModalOpen && currentSubtask && task && task._id && (
         <TaskModal
           isOpen={modalState.isSubtaskModalOpen}
           onClose={() => closeModal("isSubtaskModalOpen")}
@@ -98,8 +92,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         </TaskModal>
       )}
 
-      {/* Delete Task Modal */}
-      {modalState.isDeleteModalOpen && task && (
+      {modalState.isDeleteModalOpen && task && task._id && (
         <TaskModal
           isOpen={modalState.isDeleteModalOpen}
           onClose={() => closeModal("isDeleteModalOpen")}

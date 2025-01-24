@@ -1,45 +1,43 @@
-import React, { useEffect, useState } from "react";
+// TaskList.tsx
 import TaskCard from "./TaskCard";
-import { Task } from "../../types/taskTypes";
-import { getTasks } from "../../api/taskService"; // Import the updated API function
+import TaskFilter from "./TaskFilter";
+import SearchBar from "./SearchFilter";
+import useTask from "../../hooks/useTask";
 
-const TaskList: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalTasks, setTotalTasks] = useState(0);
-  const tasksPerPage = 9;
-
-  const fetchTasks = async (page: number, limit: number) => {
-    try {
-      const { tasks, total } = await getTasks(page, limit);
-      setTasks(tasks);
-      setTotalTasks(total);
-    } catch (error) {
-      console.error("Failed to fetch tasks:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchTasks(currentPage, tasksPerPage);
-  }, [currentPage]);
-
-  const totalPages = Math.ceil(totalTasks / tasksPerPage);
-
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
+const TaskList = () => {
+  const {
+    filteredTasks,
+    loading,
+    error,
+    totalPages,
+    currentPage,
+    handlePageChange,
+    setStatusFilter,
+    setPriorityFilter,
+    setSearchQuery,
+  } = useTask();
 
   return (
     <div className="p-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
+        <SearchBar onSearch={setSearchQuery} />
+        <TaskFilter
+          onStatusChange={setStatusFilter}
+          onPriorityChange={setPriorityFilter}
+        />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-        {tasks.length > 0 ? (
-          tasks.map((task) => <TaskCard key={task._id} task={task} />)
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : filteredTasks.length > 0 ? (
+          filteredTasks.map((task) => <TaskCard key={task._id} task={task} />)
         ) : (
           <p className="text-center text-lg text-gray-500">No tasks found.</p>
         )}
       </div>
 
-      {/* Pagination Controls */}
       <div className="flex justify-center items-center mt-6">
         <ul className="flex space-x-4">
           {Array.from({ length: totalPages }, (_, index) => (

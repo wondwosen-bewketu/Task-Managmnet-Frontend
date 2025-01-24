@@ -1,6 +1,6 @@
-import React from "react";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { Task } from "../../types/taskTypes";
+import Button from "../UI/Button";
+import { SubTask } from "../../types/taskTypes";
 
 interface TaskActionsProps {
   task: Task | null;
@@ -10,31 +10,27 @@ interface TaskActionsProps {
     isEditSubTaskModalOpen: boolean;
     isDeleteModalOpen: boolean;
   };
-  setModalState: React.Dispatch<
-    React.SetStateAction<{
-      isSubtaskModalOpen: boolean;
-      isEditModalOpen: boolean;
-      isEditSubTaskModalOpen: boolean;
-      isDeleteModalOpen: boolean;
-    }>
-  >;
-  setSubtask: React.Dispatch<React.SetStateAction<any>>;
-  setCurrentSubtask: React.Dispatch<React.SetStateAction<any>>;
+  setModalState: (state: {
+    isSubtaskModalOpen: boolean;
+    isEditModalOpen: boolean;
+    isEditSubTaskModalOpen: boolean;
+    isDeleteModalOpen: boolean;
+  }) => void;
+  setSubtask: (value: SubTask | null) => void;
+  setCurrentSubtask: (value: SubTask | null) => void;
 }
 
-const TaskActions: React.FC<TaskActionsProps> = ({
-  task,
+const TaskActions = ({
   modalState,
   setModalState,
   setSubtask,
-  setCurrentSubtask,
-}) => {
+}: TaskActionsProps) => {
   const openModal = (modalType: string) => {
     setModalState({ ...modalState, [modalType]: true });
   };
 
   const handleAddSubtask = () => {
-    setSubtask(null); // Reset current subtask when creating a new one
+    setSubtask(null);
     openModal("isSubtaskModalOpen");
   };
 
@@ -48,32 +44,23 @@ const TaskActions: React.FC<TaskActionsProps> = ({
 
   return (
     <div className="fixed top-1/2 right-8 transform -translate-y-1/2 flex flex-col items-center space-y-4 sm:space-y-6 z-50">
-      {/* Edit Task Button */}
-      <button
-        className="group flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full shadow-xl hover:scale-110 transition-transform"
+      <Button
         onClick={handleEditTask}
-        title="Edit Task"
-      >
-        <FaEdit className="text-lg text-white" />
-      </button>
+        text="Edit Task"
+        className="bg-gradient-to-r from-blue-500 to-indigo-600"
+      />
 
-      {/* Delete Task Button */}
-      <button
-        className="group flex items-center justify-center w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-xl hover:scale-110 transition-transform"
+      <Button
         onClick={handleDeleteTask}
-        title="Delete Task"
-      >
-        <FaTrash className="text-lg text-white" />
-      </button>
+        text="Delete Task"
+        className="bg-gradient-to-r from-red-500 to-pink-500"
+      />
 
-      {/* Add Subtask Button */}
-      <button
-        className="group flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full shadow-xl hover:scale-110 transition-transform"
+      <Button
         onClick={handleAddSubtask}
-        title="Add Subtask"
-      >
-        <FaPlus className="text-lg text-white" />
-      </button>
+        text="Add Subtask"
+        className="bg-gradient-to-r from-purple-500 to-pink-600"
+      />
     </div>
   );
 };
