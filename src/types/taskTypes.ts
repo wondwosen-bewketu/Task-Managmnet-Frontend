@@ -1,8 +1,11 @@
+import { Status } from "./statusTypes";
+import { TaskPriority } from "./priorityTypes";
+
 export interface SubTask {
-  _id?: string; // Make _id optional
+  _id?: string;
   title: string;
   description: string;
-  status: "pending" | "inprogress" | "completed" | "cancelled";
+  status: Status;
   parentTask?: string;
 }
 
@@ -10,8 +13,8 @@ export interface Task {
   _id?: string;
   title: string;
   description: string;
-  status: "pending" | "inprogress" | "completed" | "cancelled";
-  priority: "low" | "medium" | "high" | "urgent" | "critical";
+  status: Status;
+  priority: TaskPriority;
   subTasks?: SubTask[];
   attachments?: string[];
   createdAt?: string;
