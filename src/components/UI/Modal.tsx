@@ -10,7 +10,7 @@ interface ModalProps {
   customStyles?: string;
 }
 
-const TaskModal: React.FC<ModalProps> = ({
+const TaskModal = ({
   isOpen,
   onClose,
   children,
@@ -18,7 +18,7 @@ const TaskModal: React.FC<ModalProps> = ({
   width = "500px",
   height = "auto",
   customStyles = "",
-}) => {
+}: ModalProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(isOpen);
 
   useEffect(() => {
