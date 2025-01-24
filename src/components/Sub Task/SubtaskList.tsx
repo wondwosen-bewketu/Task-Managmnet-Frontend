@@ -1,5 +1,5 @@
-import React from "react";
 import { SubTask } from "../../types/taskTypes";
+import Button from "../UI/Button";
 
 interface SubtaskListProps {
   subtasks: SubTask[];
@@ -7,11 +7,11 @@ interface SubtaskListProps {
   onDeleteSubtask: (subTaskId: string) => void;
 }
 
-const SubtaskList: React.FC<SubtaskListProps> = ({
+const SubtaskList = ({
   subtasks,
   onEditSubtask,
   onDeleteSubtask,
-}) => {
+}: SubtaskListProps) => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-12 rounded-xl shadow-xl">
       <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-500 to-pink-500 mb-8 text-center">
@@ -34,18 +34,16 @@ const SubtaskList: React.FC<SubtaskListProps> = ({
                   {subtask.description}
                 </p>
                 <div className="flex gap-4 justify-center">
-                  <button
+                  <Button
                     onClick={() => onEditSubtask(subtask)}
+                    text="✏️ Edit"
                     className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg shadow-md hover:scale-110 hover:shadow-xl transition-all duration-300 font-semibold"
-                  >
-                    ✏️ Edit
-                  </button>
-                  <button
-                    onClick={() => onDeleteSubtask(subtask._id)}
+                  />
+                  <Button
+                    onClick={() => subtask._id && onDeleteSubtask(subtask._id)}
+                    text="🗑️ Delete"
                     className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg shadow-md hover:scale-110 hover:shadow-xl transition-all duration-300 font-semibold"
-                  >
-                    🗑️ Delete
-                  </button>
+                  />
                 </div>
               </div>
             </div>
