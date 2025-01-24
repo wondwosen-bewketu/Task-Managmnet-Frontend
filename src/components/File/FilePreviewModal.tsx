@@ -1,5 +1,3 @@
-import React from "react";
-
 interface FilePreviewModalProps {
   isOpen: boolean;
   fileUrl: string;
@@ -7,13 +5,13 @@ interface FilePreviewModalProps {
   onClose: () => void;
 }
 
-const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
+const FilePreviewModal = ({
   isOpen,
   fileUrl,
   fileType,
   onClose,
-}) => {
-  if (!isOpen) return null; // If modal is closed, return nothing
+}: FilePreviewModalProps) => {
+  if (!isOpen) return null;
 
   const fileExtension = fileType.split(".").pop()?.toLowerCase();
 
@@ -54,9 +52,8 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
     >
       <div
         className="relative bg-white p-6 md:p-10 rounded-xl shadow-2xl w-full max-w-3xl transform transition-all duration-500 scale-100"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 bg-gray-800 text-white w-8 h-8 flex justify-center items-center rounded-full hover:bg-red-500 transition-colors duration-300"
@@ -64,7 +61,6 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
           ✖
         </button>
 
-        {/* Modal Content */}
         <div className="text-center">
           <h3 className="text-3xl font-semibold mb-6 text-gray-700">
             File Preview

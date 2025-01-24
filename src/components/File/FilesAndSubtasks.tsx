@@ -1,23 +1,23 @@
-// FilesAndSubtasks Component
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SubtaskList from "../Sub Task/SubtaskList";
 import axios from "axios";
 import FilePreviewModal from "./FilePreviewModal";
 import { FiFileText, FiFile } from "react-icons/fi";
+import { SubTask } from "../../types/taskTypes";
 
 interface FilesAndSubtasksProps {
-  subtasks: any[];
+  subtasks: SubTask[];
   taskId: string;
-  onEditSubtask: (subtask: any) => void;
+  onEditSubtask: (subtask: SubTask) => void;
   onDeleteSubtask: (subTaskId: string) => void;
 }
 
-const FilesAndSubtasks: React.FC<FilesAndSubtasksProps> = ({
+const FilesAndSubtasks = ({
   subtasks,
   taskId,
   onEditSubtask,
   onDeleteSubtask,
-}) => {
+}: FilesAndSubtasksProps) => {
   const [files, setFiles] = useState<string[]>([]);
   const [loadingFiles, setLoadingFiles] = useState<boolean>(true);
   const [errorFiles, setErrorFiles] = useState<string | null>(null);
@@ -34,7 +34,7 @@ const FilesAndSubtasks: React.FC<FilesAndSubtasksProps> = ({
           `http://localhost:3000/files/task/${taskId}/files`
         );
         setFiles(response.data.files || []);
-      } catch (error) {
+      } catch {
         setErrorFiles("Failed to fetch files.");
       } finally {
         setLoadingFiles(false);
@@ -65,7 +65,6 @@ const FilesAndSubtasks: React.FC<FilesAndSubtasksProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 mt-8">
-      {/* Subtasks Section */}
       <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 rounded-xl shadow-xl">
         <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500 mb-6">
           Subtasks
@@ -76,8 +75,6 @@ const FilesAndSubtasks: React.FC<FilesAndSubtasksProps> = ({
           onDeleteSubtask={onDeleteSubtask}
         />
       </div>
-
-      {/* Files Section */}
       <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 rounded-xl shadow-xl">
         <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-500 mb-6">
           Files
@@ -118,7 +115,6 @@ const FilesAndSubtasks: React.FC<FilesAndSubtasksProps> = ({
         )}
       </div>
 
-      {/* Preview Modal */}
       <FilePreviewModal
         isOpen={isModalOpen}
         fileUrl={currentFileUrl}
