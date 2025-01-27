@@ -5,6 +5,7 @@ import { Status, Task, TaskPriority } from "../../types";
 import InputField from "../UI/InputField";
 import useTask from "../../hooks/useTask";
 
+
 interface TaskFormProps {
   closeModal: () => void;
   onSubmit: (newTask: Task) => void; // Add onSubmit here
@@ -12,7 +13,7 @@ interface TaskFormProps {
 
 const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
   const { handleAddTask } = useTask();
-
+  console.log(onSubmit);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [status, setStatus] = useState<Status>(Status.Pending);
@@ -97,5 +98,4 @@ const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
     </div>
   );
 };
-
 export default TaskForm;
