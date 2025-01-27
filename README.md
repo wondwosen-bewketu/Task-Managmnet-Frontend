@@ -1,50 +1,68 @@
-# React + TypeScript + Vite
+# Task Management Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+The Task Management Application is a web-based platform designed to help individuals and teams efficiently manage tasks, track progress, and collaborate effectively. The application supports features such as task creation, assignment, prioritization, progress tracking, and reporting.
 
-Currently, two official plugins are available:
+## Features
+- **Task Management:**
+  - Create, edit, and delete tasks.
+  - Assign tasks to team members.
+  - Set priorities (High, Medium, Low) and deadlines.
+  - Track task progress and status.
+  - Mark tasks as completed.
+  - View task details, including description...
+  - View task history and updates.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dashboard:**
+  - Overview of tasks by status (e.g., Pending, In Progress, Completed).
+  - Task statistics and progress overview.
 
-## Expanding the ESLint configuration
+- **Search and Filtering:**
+  - Search tasks by title, description, or assignee.
+  - Filter tasks by status, priority, and due date.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Responsive Design:**
+  - Optimized for desktop, tablet, and mobile devices.
 
-- Configure the top-level `parserOptions` property like this:
+## Tech Stack
+- **Frontend:** React.js,Typescript, Tailwind CSS
+- **Backend:** Node.js, Nest.js
+- **Database:** MongoDB
+- **Other Tools:**
+  - REST API for client-server communication
+  - Git and GitHub for version control
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Installation
+### Prerequisites
+- Node.js (v20+)
+- MongoDB
+- Git
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Steps
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/wondwosen-bewketu/Task-Managmnet-Frontend.git
+   cd Task-Managmnet-Frontend
+   ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+3. **Start the application:**
+     ```bash
+     pnpm run dev
+     ```
+  
+
+4. **Access the application:**
+   Open your browser and navigate to `http://localhost:5173` to access the application.
+
+
+
+## Contact
+For questions or support, please contact:
+- **Name:** Wondwosen Bewketu
+- **Email:** bewketuwondwosen@gmail.com
+- **GitHub:** github.com/wondwosen-bewketu
