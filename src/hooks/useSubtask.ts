@@ -38,7 +38,12 @@ export const useSubtask = (taskId: string, initialSubtask?: SubTask | null) => {
     };
 
     try {
-      const response = await addSubtask(newSubtask);
+      const response = await addSubtask({
+        title,
+        description,
+        status,
+        parentTask: taskId,
+      });
       if (response && response._id) {
         toast.success("Subtask successfully created!");
         window.location.reload(); // This will refresh the page
