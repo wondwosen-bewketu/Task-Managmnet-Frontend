@@ -1,6 +1,5 @@
 import TaskModal from "../UI/Modal";
 import TaskEdit from "./TaskEdit";
-import SubtaskEdit from "../Sub Task/SubtaskEdit";
 import SubtaskForm from "../Sub Task/SubtaskForm";
 import DeleteTaskForm from "./DeleteTaskForm";
 import { Task, SubTask } from "../../types/taskTypes";
@@ -9,17 +8,16 @@ interface TaskModalsProps {
   modalState: {
     isSubtaskModalOpen: boolean;
     isEditModalOpen: boolean;
-    isEditSubTaskModalOpen: boolean;
     isDeleteModalOpen: boolean;
   };
   task: Task | null;
   currentSubtask: SubTask | null;
   closeModal: (modalType: string) => void;
   handleUpdateTask: (updatedTask: Task) => void;
-  handleUpdateSubtask: (updatedSubtask: SubTask) => void;
   handleDeleteSubtask: (subTaskId: string) => void;
   handleAddSubtask: (subtask: SubTask) => void;
   handleDeleteTask: (taskId: string) => void;
+  handleUpdateSubtask: (subtask: SubTask) => void; // Add this handler
 }
 
 const TaskModals = ({
@@ -30,7 +28,7 @@ const TaskModals = ({
   handleUpdateTask,
   handleAddSubtask,
   handleDeleteTask,
-  handleUpdateSubtask,
+  handleUpdateSubtask, // Pass this prop
 }: TaskModalsProps) => {
   return (
     <>
@@ -44,21 +42,6 @@ const TaskModals = ({
             task={task}
             onUpdate={handleUpdateTask}
             onClose={() => closeModal("isEditModalOpen")}
-          />
-        </TaskModal>
-      )}
-
-      {modalState.isEditSubTaskModalOpen && currentSubtask && (
-        <TaskModal
-          isOpen={modalState.isEditSubTaskModalOpen}
-          onClose={() => closeModal("isEditSubTaskModalOpen")}
-          title="Edit Sub Task"
-        >
-          <SubtaskEdit
-            subtask={currentSubtask}
-            onSubmit={handleUpdateSubtask}
-            onClose={() => closeModal("isEditSubTaskModalOpen")}
-            isOpen={modalState.isEditSubTaskModalOpen}
           />
         </TaskModal>
       )}

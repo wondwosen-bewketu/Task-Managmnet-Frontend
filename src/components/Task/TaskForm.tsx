@@ -3,17 +3,14 @@ import { toast } from "react-toastify";
 import Button from "../UI/Button";
 import { Status, Task, TaskPriority } from "../../types";
 import InputField from "../UI/InputField";
-import useTask from "../../hooks/useTask";
-
 
 interface TaskFormProps {
+  onSubmit: (newTask: Task) => Promise<void>;
   closeModal: () => void;
-  onSubmit: (newTask: Task) => void; // Add onSubmit here
 }
 
 const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
-  const { handleAddTask } = useTask();
-  console.log(onSubmit);
+  // Include onSubmit prop here
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [status, setStatus] = useState<Status>(Status.Pending);
@@ -22,7 +19,7 @@ const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newTask = {
+    const newTask: Task = {
       title,
       description,
       status,
@@ -32,7 +29,7 @@ const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
     };
 
     try {
-      await handleAddTask(newTask);
+      await onSubmit(newTask); // Call the onSubmit prop
       toast.success("Task created successfully!");
       closeModal();
     } catch (err) {
@@ -90,7 +87,6 @@ const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
         </div>
         <Button
           type="submit"
-          onClick={handleSubmit}
           text="Create Task"
           className="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
         />
@@ -98,4 +94,5 @@ const TaskForm = ({ closeModal, onSubmit }: TaskFormProps) => {
     </div>
   );
 };
+
 export default TaskForm;

@@ -1,21 +1,25 @@
 import { useState } from "react";
 import TaskList from "./TaskList";
-import { Task } from "../../types/taskTypes";
 import TaskModal from "../UI/Modal";
 import TaskForm from "./TaskForm";
 import Button from "../UI/Button";
-import useTask from "../../hooks/useTask";
+import { useTask } from "../../context/TaskContext"; 
+import { Task } from "../../types";
 
 const TaskBoard = () => {
-  const { loading, error, handleAddTask } = useTask();
-
+  const { loading, error, handleAddTask, loadTasks } = useTask();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const handleAddTaskWrapper = (newTask: Task) => {
-    handleAddTask(newTask);
-    setIsModalOpen(false);
-    window.location.reload();
+  const handleAddTaskWrapper = async (newTask: Task) => {
+    try {
+      await handleAddTask(newTask);
+      setIsModalOpen(false);
+      await loadTasks();
+    } catch (err) {
+      console.error("Error adding task:", err);
+    }
   };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">

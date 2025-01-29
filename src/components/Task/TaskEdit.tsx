@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { Task } from "../../types/taskTypes";
 import Button from "../UI/Button";
 import { Status, TaskPriority } from "../../types";
-import InputField from "../UI/InputField"; // Import reusable InputField
+import InputField from "../UI/InputField"; 
 
 interface TaskEditProps {
   task: Task;
@@ -33,11 +33,10 @@ const TaskEdit = ({ task, onUpdate, onClose }: TaskEditProps) => {
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Title Field */}
         <InputField
           id="title"
           label="Title"
-          name="title" // Add name
+          name="title"
           value={editedTask.title}
           onChange={handleChange}
           placeholder="Enter task title"
@@ -47,7 +46,7 @@ const TaskEdit = ({ task, onUpdate, onClose }: TaskEditProps) => {
         <InputField
           id="description"
           label="Description"
-          name="description" // Add name
+          name="description"
           value={editedTask.description}
           onChange={handleChange}
           placeholder="Enter task description"
@@ -55,8 +54,6 @@ const TaskEdit = ({ task, onUpdate, onClose }: TaskEditProps) => {
           rows={4}
           required
         />
-
-        {/* Status Field */}
         <div>
           <label className="block font-semibold text-gray-800" htmlFor="status">
             Status
@@ -76,8 +73,6 @@ const TaskEdit = ({ task, onUpdate, onClose }: TaskEditProps) => {
             ))}
           </select>
         </div>
-
-        {/* Priority Field */}
         <div>
           <label
             className="block font-semibold text-gray-800"
@@ -102,7 +97,6 @@ const TaskEdit = ({ task, onUpdate, onClose }: TaskEditProps) => {
           </select>
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end space-x-4">
           <Button
             onClick={onClose}
