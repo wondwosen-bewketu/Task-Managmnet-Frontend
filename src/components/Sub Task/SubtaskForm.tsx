@@ -1,34 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { SubTask, Status } from "../../types";
+import Button from "../UI/Button"; // Assuming you have the Button component
 
 interface SubtaskFormProps {
   taskId: string;
-  subtask?: SubTask;
   onSubmit: (subtask: SubTask) => void;
   onClose: () => void;
 }
 
-const SubtaskForm = ({
-  taskId,
-  subtask,
-  onSubmit,
-  onClose,
-}: SubtaskFormProps) => {
+const SubtaskForm = ({ taskId, onSubmit, onClose }: SubtaskFormProps) => {
   const [formData, setFormData] = useState<SubTask>({
-    title: subtask?.title || "",
-    description: subtask?.description || "",
-    status: subtask?.status || Status.Pending,
+    title: "",
+    description: "",
+    status: Status.Pending,
     parentTask: taskId,
   });
-
-  useEffect(() => {
-    if (subtask) {
-      setFormData({
-        ...subtask,
-        parentTask: taskId,
-      });
-    }
-  }, [subtask, taskId]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -47,9 +34,17 @@ const SubtaskForm = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    setIsSubmitting(true); // Set submitting state to true
+
+    try {
+      await onSubmit(formData); // Submit the form
+    } catch (error) {
+      console.error("Error adding subtask", error);
+    } finally {
+      setIsSubmitting(false); // Reset submitting state after the process
+    }
   };
 
   return (
@@ -111,19 +106,19 @@ const SubtaskForm = ({
       </div>
 
       <div className="flex justify-between">
-        <button
+        <Button
           type="button"
           onClick={onClose}
+          text="Cancel"
           className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-        >
-          Cancel
-        </button>
-        <button
+        />
+        <Button
           type="submit"
+          onClick={handleSubmit}
+          text={isSubmitting ? "Adding Subtask..." : "Add Subtask"} // Change label based on submitting state
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          {subtask ? "Update Subtask" : "Add Subtask"}
-        </button>
+          disabled={isSubmitting} // Disable button during submission
+        />
       </div>
     </form>
   );
