@@ -10,7 +10,6 @@ const Header = () => {
   return (
     <header className="bg-black text-white shadow-lg">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
         <h1 className="text-3xl font-extrabold tracking-tight text-white hover:text-gray-300 transition-colors duration-300">
           <Link to="/" className="flex items-center space-x-2">
             <span className="text-4xl">📋</span>
@@ -18,7 +17,6 @@ const Header = () => {
           </Link>
         </h1>
 
-        {/* Mobile Menu Toggle */}
         <div className="md:hidden">
           <button onClick={toggleMenu} className="text-3xl text-white">
             {isMenuOpen ? <HiX /> : <HiMenuAlt4 />}

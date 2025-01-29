@@ -25,10 +25,9 @@ const TaskModal = ({
     if (isOpen) {
       setIsVisible(true);
     } else {
-      // Fade out the modal before closing
       const timer = setTimeout(() => {
         setIsVisible(false);
-      }, 200); // Wait for transition duration before hiding the modal
+      }, 200); 
       return () => clearTimeout(timer);
     }
   }, [isOpen]);

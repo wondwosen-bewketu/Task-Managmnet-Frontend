@@ -8,7 +8,6 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} Task Manager. All rights reserved.
         </p>
         <div className="flex space-x-6 justify-center md:justify-end">
-          {/* My Website Link */}
           <a
             href="https://wendis-portfolio.vercel.app/"
             target="_blank"
@@ -18,7 +17,6 @@ const Footer = () => {
           >
             🌐
           </a>
-          {/* LinkedIn Link */}
           <a
             href="https://www.linkedin.com/in/wondwosen-bewketu-06b553282/"
             target="_blank"

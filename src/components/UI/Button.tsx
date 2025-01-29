@@ -1,8 +1,8 @@
 import React from "react";
 
 interface ButtonProps {
-  onClick: (e: React.FormEvent) => void;
-  text: string;
+  onClick?: (e: React.FormEvent) => void;
+  text: React.ReactNode;
   className?: string;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
@@ -18,7 +18,7 @@ const Button = ({
   return (
     <button
       type={type}
-      onClick={onClick || (() => {})} // Provide a default empty function
+      onClick={onClick || (() => {})}
       className={`${className} ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
