@@ -38,10 +38,11 @@ interface TaskContextType {
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
+interface TaskProviderProps {
+  children: React.ReactNode;
+}
 
-export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const TaskProvider = ({ children }: TaskProviderProps) => {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [task, setTask] = useState<Task | null>(null);
@@ -118,7 +119,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
   const handleDeleteTask = async (taskId: string) => {
-    setError(null); 
+    setError(null);
     try {
       await deleteTask(taskId);
 

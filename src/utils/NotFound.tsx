@@ -1,6 +1,4 @@
-import React from "react";
-
-const NotFound: React.FC = () => (
+const NotFound = () => (
   <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200">
     <h1 className="text-6xl font-extrabold text-gray-800 mb-4 animate-pulse">
       404

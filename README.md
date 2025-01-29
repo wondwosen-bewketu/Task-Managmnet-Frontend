@@ -35,7 +35,6 @@ The Task Management Application is a web-based platform designed to help individ
 ## Installation
 ### Prerequisites
 - Node.js (v20+)
-- MongoDB
 - Git
 
 ### Steps
@@ -58,6 +57,8 @@ The Task Management Application is a web-based platform designed to help individ
 
 4. **Access the application:**
    Open your browser and navigate to `http://localhost:5173` to access the application.
+
+   the cors is working only by this `http://localhost:5173` and   `https://fidel-task-managment.vercel.app/`
 
 
 

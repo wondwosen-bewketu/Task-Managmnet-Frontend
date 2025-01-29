@@ -6,13 +6,19 @@ interface SubtaskFormProps {
   taskId: string;
   onSubmit: (subtask: SubTask) => void;
   onClose: () => void;
+  subtask?: SubTask; // Make subtask optional
 }
 
-const SubtaskForm = ({ taskId, onSubmit, onClose }: SubtaskFormProps) => {
+const SubtaskForm = ({
+  taskId,
+  subtask,
+  onSubmit,
+  onClose,
+}: SubtaskFormProps) => {
   const [formData, setFormData] = useState<SubTask>({
-    title: "",
-    description: "",
-    status: Status.Pending,
+    title: subtask?.title || "",
+    description: subtask?.description || "",
+    status: subtask?.status || Status.Pending,
     parentTask: taskId,
   });
   const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
@@ -115,9 +121,9 @@ const SubtaskForm = ({ taskId, onSubmit, onClose }: SubtaskFormProps) => {
         <Button
           type="submit"
           onClick={handleSubmit}
-          text={isSubmitting ? "Adding Subtask..." : "Add Subtask"} // Change label based on submitting state
+          text={isSubmitting ? "Adding Subtask..." : "Add Subtask"}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          disabled={isSubmitting} // Disable button during submission
+          disabled={isSubmitting}
         />
       </div>
     </form>

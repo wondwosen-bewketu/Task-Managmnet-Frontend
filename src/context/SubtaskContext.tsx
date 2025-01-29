@@ -11,9 +11,11 @@ interface SubtaskContextType {
 
 const SubtaskContext = createContext<SubtaskContextType | undefined>(undefined);
 
-export const SubtaskProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+interface SubtaskProviderProps {
+  children: React.ReactNode;
+}
+
+export const SubtaskProvider = ({ children }: SubtaskProviderProps) => {
   const [subtasks, setSubtasks] = useState<SubTask[]>([]);
 
   const handleAddSubtask = async (subtask: SubTask) => {

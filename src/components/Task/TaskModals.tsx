@@ -68,7 +68,7 @@ const TaskModals = ({
         >
           <SubtaskForm
             taskId={task._id}
-            subtask={currentSubtask}
+            subtask={currentSubtask} // Pass currentSubtask here
             onSubmit={handleUpdateSubtask}
             onClose={() => closeModal("isSubtaskModalOpen")}
           />

@@ -12,43 +12,42 @@ interface FileContextType {
 
 const FileContext = createContext<FileContextType | undefined>(undefined);
 
-export const FileProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+
+interface FileProviderProps {
+  children: React.ReactNode;
+}
+export const FileProvider = ({ children }: FileProviderProps) => {
   const [files, setFiles] = useState<string[]>([]);
-  const [loadingFiles, setLoadingFiles] = useState<boolean>(false); // Start as false
+  const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
   const [errorFiles, setErrorFiles] = useState<string | null>(null);
 
-  // Fetch files based on taskId
   const handleFetchFiles = async (taskId: string) => {
-    setLoadingFiles(true); // Set loading state to true when fetching starts
+    setLoadingFiles(true);
     try {
-      const fetchedFiles = await fetchFiles(taskId); // Fetch files from API or service
-      setFiles(fetchedFiles); // Update the files state
-      setErrorFiles(null); // Reset error state if fetching succeeds
+      const fetchedFiles = await fetchFiles(taskId);
+      setFiles(fetchedFiles);
+      setErrorFiles(null);
     } catch {
-      setErrorFiles("Failed to fetch files."); // Set error if something goes wrong
+      setErrorFiles("Failed to fetch files.");
     } finally {
-      setLoadingFiles(false); // Set loading state to false once fetching is done
+      setLoadingFiles(false);
     }
   };
 
-  // Handle file upload
   const handleUploadFile = async (file: File, taskId: string) => {
     try {
-      const response = await uploadFile(file, taskId); // Upload file via the service
-      setFiles((prevFiles) => [...prevFiles, response.url]); // Add the new file URL to the state
+      const response = await uploadFile(file, taskId);
+      setFiles((prevFiles) => [...prevFiles, response.url]);
     } catch (error) {
       setErrorFiles("Failed to upload file. Please try again.");
       console.error("Error uploading file:", error);
     }
   };
 
-  // Handle file deletion
   const handleDeleteFile = async (fileId: string) => {
     try {
-      await deleteFile(fileId); // Delete file using the service
-      setFiles((prevFiles) => prevFiles.filter((file) => file !== fileId)); // Remove the file from the state
+      await deleteFile(fileId);
+      setFiles((prevFiles) => prevFiles.filter((file) => file !== fileId));
     } catch (error) {
       setErrorFiles("Failed to delete file. Please try again.");
       console.error("Error deleting file:", error);
