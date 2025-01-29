@@ -1,21 +1,21 @@
 import apiClient from "../api/apiClient";
 import { SubTask } from "../types/taskTypes";
 
-export const addSubtask = async (subtask: {
-  title: string;
-  description: string;
-  status: string;
-  parentTask: string;
-}) => {
+export const addSubtask = async (subtask: SubTask) => {
+  if (!subtask.title || !subtask.description) {
+    throw new Error("Title and description are required for the subtask.");
+  }
+
   try {
-    console.log("Subtask data being sent:", JSON.stringify(subtask));
     const response = await apiClient.post("/subtasks", subtask);
     return response.data;
   } catch (error) {
-    console.error("Error creating subtask:", error);
+    console.error("Error adding subtask:", error);
     throw new Error("Error creating subtask");
   }
 };
+
+
 
 export const updateSubtask = async (
   id: string,

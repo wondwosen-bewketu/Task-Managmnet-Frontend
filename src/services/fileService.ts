@@ -1,6 +1,15 @@
-import apiClient from "../api/apiClient"; // Import the configured Axios client
+import apiClient from "../api/apiClient";
 
-// Upload a file
+export const fetchFiles = async (taskId: string): Promise<string[]> => {
+  try {
+    const response = await apiClient.get(`/files/task/${taskId}/files`);
+    return response.data.files || [];
+  } catch (error) {
+    console.error("Error fetching files:", error);
+    throw new Error("Failed to fetch files.");
+  }
+};
+
 export const uploadFile = async (
   file: File,
   taskId: string
@@ -25,7 +34,6 @@ export const uploadFile = async (
   }
 };
 
-// Delete a file
 export const deleteFile = async (fileId: string): Promise<void> => {
   try {
     await apiClient.delete(`/files/${fileId}`);

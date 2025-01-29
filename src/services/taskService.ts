@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import apiClient from "../api/apiClient";
 import { Task } from "../types/taskTypes";
 
@@ -56,8 +57,12 @@ export const deleteTask = async (id: string): Promise<void> => {
   try {
     await apiClient.delete(`/tasks/${id}`);
   } catch (error) {
-    console.error("Error deleting task:", error);
-    throw new Error("Could not delete task");
+    const axiosError = error as AxiosError;
+    console.error(
+      `Error deleting task with ID ${id}:`,
+      axiosError.response?.data || axiosError.message
+    );
+    throw new Error("Could not delete task. Please try again.");
   }
 };
 
