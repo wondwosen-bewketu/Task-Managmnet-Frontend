@@ -1,14 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { SubTask, Status } from "../../types";
-import Button from "../UI/Button";
-import InputField from "../UI/InputField";
-import { useSubtask } from "../../hooks/useSubtask"; // Assuming this is the correct import path
 
 interface SubtaskFormProps {
   taskId: string;
+  subtask?: SubTask;
   onSubmit: (subtask: SubTask) => void;
   onClose: () => void;
-  subtask?: SubTask | null;
 }
 
 const SubtaskForm = ({
@@ -17,85 +14,116 @@ const SubtaskForm = ({
   onSubmit,
   onClose,
 }: SubtaskFormProps) => {
-  // Using the useSubtask hook
-  const {
-    title,
-    description,
-    status,
-    loading,
-    setTitle,
-    setDescription,
-    setStatus,
-    handleSubmit,
-    handleChange,
-  } = useSubtask(taskId, subtask);
+  const [formData, setFormData] = useState<SubTask>({
+    title: subtask?.title || "",
+    description: subtask?.description || "",
+    status: subtask?.status || Status.Pending,
+    parentTask: taskId,
+  });
 
   useEffect(() => {
     if (subtask) {
-      setTitle(subtask.title);
-      setDescription(subtask.description);
-      setStatus(subtask.status);
+      setFormData({
+        ...subtask,
+        parentTask: taskId,
+      });
     }
-  }, [subtask, setTitle, setDescription, setStatus]);
+  }, [subtask, taskId]);
 
-  const onFormSubmit = async (e: React.FormEvent) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      status: e.target.value as Status,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const newSubtask = await handleSubmit(); // Calls the handleSubmit from the hook
-    if (newSubtask) {
-      onSubmit(newSubtask);
-      onClose();
-    }
+    onSubmit(formData);
   };
 
   return (
-    <form onSubmit={onFormSubmit} className="space-y-6">
-      {/* Title Field */}
-      <InputField
-        id="title"
-        label="Title"
-        value={title}
-        onChange={handleChange} // Pass handleChange here
-        placeholder="Enter subtask title"
-        required
-      />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label
+          htmlFor="title"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Title
+        </label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+          className="w-full py-2 px-4 bg-white border rounded-md focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-      {/* Description Field */}
-      <InputField
-        id="description"
-        label="Description"
-        value={description}
-        onChange={handleChange} // Pass handleChange here
-        placeholder="Enter subtask description"
-        type="textarea"
-        rows={4}
-        required
-      />
+      <div>
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Description
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          rows={3}
+          className="w-full py-2 px-4 bg-white border rounded-md focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-      {/* Status Field */}
-      <InputField
-        id="status"
-        label="Status"
-        value={status}
-        onChange={handleChange} // Pass handleChange here
-        type="select"
-        options={Object.values(Status)}
-        required
-      />
+      <div>
+        <label
+          htmlFor="status"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Status
+        </label>
+        <select
+          id="status"
+          name="status"
+          value={formData.status}
+          onChange={handleStatusChange}
+          className="w-full py-2 px-4 bg-white border rounded-md focus:ring-2 focus:ring-blue-500"
+        >
+          <option value={Status.Pending}>Pending</option>
+          <option value={Status.InProgress}>In Progress</option>
+          <option value={Status.Completed}>Completed</option>
+          <option value={Status.Cancelled}>Cancelled</option>
+        </select>
+      </div>
 
-      <div className="flex justify-end space-x-4">
-        <Button
+      <div className="flex justify-between">
+        <button
+          type="button"
           onClick={onClose}
-          text="Cancel"
-          className="py-2 px-4 bg-gray-300 rounded-lg text-gray-800 hover:bg-gray-400"
-        />
-        <Button
+          className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+        <button
           type="submit"
-          onClick={onFormSubmit} // Add onClick handler
-          text={loading ? "Saving..." : "Save"}
-          className="py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg disabled:opacity-50"
-          disabled={loading}
-        />
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          {subtask ? "Update Subtask" : "Add Subtask"}
+        </button>
       </div>
     </form>
   );

@@ -1,17 +1,42 @@
+import { useState } from "react";
+import { FaTrashAlt } from "react-icons/fa";
 import { SubTask } from "../../types/taskTypes";
 import Button from "../UI/Button";
+import ConfirmModal from "../UI/ConfirmModal";
 
 interface SubtaskListProps {
   subtasks: SubTask[];
-  onEditSubtask: (subtask: SubTask) => void;
-  onDeleteSubtask: (subTaskId: string) => void;
+  onDeleteSubtask: (subTaskId: string) => Promise<void>;
 }
 
-const SubtaskList = ({
-  subtasks,
-  onEditSubtask,
-  onDeleteSubtask,
-}: SubtaskListProps) => {
+const SubtaskList = ({ subtasks, onDeleteSubtask }: SubtaskListProps) => {
+  const [selectedSubtaskId, setSelectedSubtaskId] = useState<string | null>(
+    null
+  );
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleDeleteClick = (subTaskId: string) => {
+    setSelectedSubtaskId(subTaskId);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedSubtaskId) {
+      setLoading(true);
+      try {
+        await onDeleteSubtask(selectedSubtaskId);
+      } catch (error) {
+        console.error("Failed to delete subtask:", error);
+      } finally {
+        setLoading(false);
+        setSelectedSubtaskId(null);
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setSelectedSubtaskId(null);
+  };
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-black p-12 rounded-xl shadow-xl">
       <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-500 to-pink-500 mb-8 text-center">
@@ -35,13 +60,10 @@ const SubtaskList = ({
                 </p>
                 <div className="flex gap-4 justify-center">
                   <Button
-                    onClick={() => onEditSubtask(subtask)}
-                    text="✏️ Edit"
-                    className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg shadow-md hover:scale-110 hover:shadow-xl transition-all duration-300 font-semibold"
-                  />
-                  <Button
-                    onClick={() => subtask._id && onDeleteSubtask(subtask._id)}
-                    text="🗑️ Delete"
+                    onClick={() =>
+                      subtask._id && handleDeleteClick(subtask._id)
+                    }
+                    text={<FaTrashAlt />}
                     className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg shadow-md hover:scale-110 hover:shadow-xl transition-all duration-300 font-semibold"
                   />
                 </div>
@@ -53,6 +75,19 @@ const SubtaskList = ({
         <p className="text-gray-400 italic text-center text-lg mt-8">
           No subtasks available.
         </p>
+      )}
+
+      {selectedSubtaskId && (
+        <ConfirmModal
+          message="Are you sure you want to delete this subtask?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+      {loading && (
+        <div className="fixed inset-0 flex justify-center items-center bg-opacity-50 bg-black z-50">
+          <div className="spinner-border animate-spin border-t-4 border-blue-500 rounded-full w-16 h-16"></div>
+        </div>
       )}
     </div>
   );
