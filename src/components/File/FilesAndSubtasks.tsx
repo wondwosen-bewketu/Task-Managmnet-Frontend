@@ -1,50 +1,42 @@
 import { useState, useEffect } from "react";
 import SubtaskList from "../Sub Task/SubtaskList";
-import axios from "axios";
-import FilePreviewModal from "./FilePreviewModal";
 import { FiFileText, FiFile } from "react-icons/fi";
+import FilePreviewModal from "./FilePreviewModal";
 import { SubTask } from "../../types/taskTypes";
+import { useFileContext } from "../../context";
 
 interface FilesAndSubtasksProps {
   subtasks: SubTask[];
   taskId: string;
   onEditSubtask: (subtask: SubTask) => void;
-  onDeleteSubtask: (subTaskId: string) => void;
+  onDeleteSubtask: (subTaskId: string) => Promise<void>;
 }
 
 const FilesAndSubtasks = ({
   subtasks,
   taskId,
-  onEditSubtask,
   onDeleteSubtask,
 }: FilesAndSubtasksProps) => {
-  const [files, setFiles] = useState<string[]>([]);
-  const [loadingFiles, setLoadingFiles] = useState<boolean>(true);
-  const [errorFiles, setErrorFiles] = useState<string | null>(null);
-
+  const { files, loadingFiles, errorFiles, handleFetchFiles } =
+    useFileContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentFileUrl, setCurrentFileUrl] = useState("");
   const [currentFileType, setCurrentFileType] = useState("");
 
+  // Fetch files only if taskId changes or if files are not already loaded
   useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        setLoadingFiles(true);
-        const response = await axios.get(
-          `http://localhost:3000/files/task/${taskId}/files`
-        );
-        setFiles(response.data.files || []);
-      } catch {
-        setErrorFiles("Failed to fetch files.");
-      } finally {
-        setLoadingFiles(false);
-      }
-    };
+    if (!files.length) {
+      console.log("Fetching files for task:", taskId);
+      handleFetchFiles(taskId);
+    }
+  }, [taskId, files.length, handleFetchFiles]);
 
-    fetchFiles();
-  }, [taskId]);
+  useEffect(() => {
+    console.log("Files loaded:", files); // Log loaded files
+  }, [files]);
 
   const openPreviewModal = (fileUrl: string, fileType: string) => {
+    console.log("Opening preview modal for file:", fileUrl); // Debug log
     setCurrentFileUrl(fileUrl);
     setCurrentFileType(fileType);
     setIsModalOpen(true);
@@ -69,16 +61,15 @@ const FilesAndSubtasks = ({
         <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500 mb-6">
           Subtasks
         </h2>
-        <SubtaskList
-          subtasks={subtasks}
-          onEditSubtask={onEditSubtask}
-          onDeleteSubtask={onDeleteSubtask}
-        />
+        <SubtaskList subtasks={subtasks} onDeleteSubtask={onDeleteSubtask} />
       </div>
+
       <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black p-6 rounded-xl shadow-xl">
         <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-500 mb-6">
           Files
         </h2>
+
+        {/* Loading and error states */}
         {loadingFiles ? (
           <p className="text-gray-400">Loading files...</p>
         ) : errorFiles ? (
@@ -115,6 +106,7 @@ const FilesAndSubtasks = ({
         )}
       </div>
 
+      {/* File Preview Modal */}
       <FilePreviewModal
         isOpen={isModalOpen}
         fileUrl={currentFileUrl}

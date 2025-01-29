@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { useFileContext } from "../../context/FileContext";
 import { useDropzone } from "react-dropzone";
 import Button from "../UI/Button";
-import { uploadFile } from "../../services";
 
 interface FileUploadProps {
   taskId: string;
@@ -11,8 +11,9 @@ interface FileUploadProps {
 const FileUpload = ({ taskId, onClose }: FileUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const { handleUploadFile } = useFileContext();
 
   const onDrop = (acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
@@ -41,25 +42,23 @@ const FileUpload = ({ taskId, onClose }: FileUploadProps) => {
     setErrorMessage(null);
 
     try {
-      const response = await uploadFile(file, taskId);
-      setUploadSuccess(true);
-      console.log("File uploaded successfully:", response);
-    } catch (error) {
+      await handleUploadFile(file, taskId);
+      onClose(); // Close modal after upload
+    } catch {
       setErrorMessage("Failed to upload file. Please try again.");
-      console.error("Error uploading file:", error);
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center">
       <div className="modal-content bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
         <h3 className="text-2xl font-bold mb-6">Upload File</h3>
 
         <div
           {...getRootProps()}
-          className="border-4 border-dashed border-gray-300 p-8 text-center cursor-pointer"
+          className="border-4 border-dashed border-gray-300 p-8 text-center cursor-pointer hover:border-blue-500 transition-all"
         >
           <input {...getInputProps()} />
           <p className="text-gray-600">
@@ -88,12 +87,6 @@ const FileUpload = ({ taskId, onClose }: FileUploadProps) => {
             className="px-6 py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all"
           />
         </div>
-
-        {uploadSuccess && (
-          <div className="mt-4 text-green-600">
-            <p>File uploaded successfully!</p>
-          </div>
-        )}
 
         {errorMessage && (
           <div className="mt-4 text-red-600">
